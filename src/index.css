@@ -8,3 +8,14 @@
 body {
   background-color: #fafafa;
 }
+@media (max-width: 768px) {
+  nav .desktop-links-marker {
+    display: none !important;
+  }
+  nav .mobile-menu-marker {
+    display: flex !important;
+  }
+  nav .menu-button-marker {
+    display: block !important;
+  }
+}

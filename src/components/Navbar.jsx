@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/pranubyteslogo.jpeg';
 
@@ -6,6 +6,14 @@ function Navbar() {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const [searchTerm, setSearchTerm] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -16,14 +24,38 @@ function Navbar() {
   const handleSearch = (e) => {
     e.preventDefault();
     navigate(`/?search=${encodeURIComponent(searchTerm)}`);
+    setMenuOpen(false);
   };
 
   return (
     <nav style={styles.navbar}>
-      <Link to="/" style={styles.logoContainer}>
-        <span style={styles.logoText}>Pranu Bytes</span>
-        <img src={logo} alt="Pranu Bytes Logo" style={styles.logoImage} />
-      </Link>
+      <div style={styles.topRow}>
+        <Link to="/" style={styles.logoContainer} onClick={() => setMenuOpen(false)}>
+          <span style={styles.logoText}>Pranu Bytes</span>
+          <img src={logo} alt="Pranu Bytes Logo" style={styles.logoImage} />
+        </Link>
+
+        {isMobile && (
+          <button
+            style={styles.menuButtonVisible}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? '✕' : '☰'}
+          </button>
+        )}
+
+        <div style={isMobile ? { display: 'none' } : styles.desktopLinks}>
+          <Link to="/" style={styles.link}>Home</Link>
+          <Link to="/cart" style={styles.link}>Cart</Link>
+          <Link to="/orders" style={styles.link}>Orders</Link>
+          <Link to="/addresses" style={styles.link}>Addresses</Link>
+          {token ? (
+            <button onClick={handleLogout} style={styles.button}>Logout</button>
+          ) : (
+            <Link to="/login" style={styles.link}>Login</Link>
+          )}
+        </div>
+      </div>
 
       <form onSubmit={handleSearch} style={styles.searchForm}>
         <input
@@ -36,30 +68,38 @@ function Navbar() {
         <button type="submit" style={styles.searchButton}>🔍</button>
       </form>
 
-      <div style={styles.links}>
-        <Link to="/" style={styles.link}>Home</Link>
-        <Link to="/cart" style={styles.link}>Cart</Link>
-        <Link to="/orders" style={styles.link}>Orders</Link>
-        <Link to="/addresses" style={styles.link}>Addresses</Link>
-
-        {token ? (
-          <button onClick={handleLogout} style={styles.button}>Logout</button>
-        ) : (
-          <Link to="/login" style={styles.link}>Login</Link>
-        )}
-      </div>
+      {isMobile && menuOpen && (
+        <div style={styles.mobileMenu}>
+          <Link to="/" style={styles.mobileLink} onClick={() => setMenuOpen(false)}>Home</Link>
+          <Link to="/cart" style={styles.mobileLink} onClick={() => setMenuOpen(false)}>Cart</Link>
+          <Link to="/orders" style={styles.mobileLink} onClick={() => setMenuOpen(false)}>Orders</Link>
+          <Link to="/addresses" style={styles.mobileLink} onClick={() => setMenuOpen(false)}>Addresses</Link>
+          {token ? (
+            <button
+              onClick={() => { handleLogout(); setMenuOpen(false); }}
+              style={styles.mobileLogoutButton}
+            >
+              Logout
+            </button>
+          ) : (
+            <Link to="/login" style={styles.mobileLink} onClick={() => setMenuOpen(false)}>Login</Link>
+          )}
+        </div>
+      )}
     </nav>
   );
 }
 
 const styles = {
   navbar: {
+    backgroundColor: '#2e7d32',
+    color: 'white',
+    padding: '8px 20px',
+  },
+  topRow: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '8px 30px',
-    backgroundColor: '#2e7d32',
-    color: 'white',
   },
   logoContainer: {
     display: 'flex',
@@ -68,46 +108,26 @@ const styles = {
     textDecoration: 'none',
   },
   logoText: {
-    fontSize: '22px',
+    fontSize: '20px',
     fontWeight: 'bold',
     color: 'white',
   },
   logoImage: {
-    height: '85px',
-    width: '85px',
-    marginTop: '6px',
-    marginLeft: '15px',
+    height: '55px',
+    width: '55px',
+    marginTop: '4px',
     objectFit: 'cover',
     borderRadius: '50%',
     border: '2px solid white',
   },
-  searchForm: {
-    display: 'flex',
-    alignItems: 'center',
-    flex: 1,
-    maxWidth: 500,
-    margin: '0 20px',
-    alignSelf: 'flex-start',
-    marginTop: '4px',
-  },
-  searchInput: {
-    flex: 1,
-    padding: '12px 18px',
-    borderRadius: '20px 0 0 20px',
+  menuButtonVisible: {
+    background: 'none',
     border: 'none',
-    outline: 'none',
-    fontSize: 16,
-  },
-  searchButton: {
-    padding: '12px 18px',
-    borderRadius: '0 20px 20px 0',
-    border: 'none',
-    backgroundColor: 'white',
-    color: '#2e7d32',
+    color: 'white',
+    fontSize: 26,
     cursor: 'pointer',
-    fontSize: 16,
   },
-  links: {
+  desktopLinks: {
     display: 'flex',
     gap: '20px',
     alignItems: 'center',
@@ -125,6 +145,51 @@ const styles = {
     borderRadius: '5px',
     cursor: 'pointer',
     fontWeight: 'bold',
+  },
+  searchForm: {
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  searchInput: {
+    flex: 1,
+    padding: '10px 16px',
+    borderRadius: '20px 0 0 20px',
+    border: 'none',
+    outline: 'none',
+    fontSize: 15,
+  },
+  searchButton: {
+    padding: '10px 16px',
+    borderRadius: '0 20px 20px 0',
+    border: 'none',
+    backgroundColor: 'white',
+    color: '#2e7d32',
+    cursor: 'pointer',
+    fontSize: 15,
+  },
+  mobileMenu: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginTop: 12,
+    gap: 10,
+  },
+  mobileLink: {
+    color: 'white',
+    textDecoration: 'none',
+    fontSize: 16,
+    padding: '8px 0',
+    borderBottom: '1px solid rgba(255,255,255,0.2)',
+  },
+  mobileLogoutButton: {
+    backgroundColor: 'white',
+    color: '#2e7d32',
+    border: 'none',
+    padding: '10px',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    marginTop: 5,
   },
 };
 
