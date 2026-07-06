@@ -88,20 +88,23 @@ function AdminDashboard() {
 
 const styles = {
   container: {
-    padding: '30px 60px',
+    padding: '20px 15px',
   },
-  navRow: {
+ navRow: {
     display: 'flex',
-    gap: 20,
+    gap: 12,
     marginTop: 15,
     marginBottom: 25,
+    flexWrap: 'wrap',
   },
   navLink: {
-    padding: '10px 20px',
+    padding: '10px 16px',
     backgroundColor: '#1a237e',
     color: 'white',
     borderRadius: 6,
     textDecoration: 'none',
+    fontSize: 14,
+    whiteSpace: 'nowrap',
   },
   statsGrid: {
     display: 'grid',
