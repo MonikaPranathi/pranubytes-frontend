@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import API from '../api/axios';
+import { subscribeToPush } from '../pushNotifications';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -17,6 +18,9 @@ function Login() {
       const res = await API.post('/auth/login', { email, password });
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
+
+      subscribeToPush();
+
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');
