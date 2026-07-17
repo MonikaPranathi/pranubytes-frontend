@@ -31,13 +31,14 @@ function AdminDashboard() {
     <div style={styles.container}>
       <h2>Admin Dashboard</h2>
 
-     <div style={styles.navRow}>
+    <div style={styles.navRow}>
         <Link to="/admin/products" style={styles.navLink}>Manage Products</Link>
         <Link to="/admin/orders" style={styles.navLink}>Manage Orders</Link>
         <Link to="/admin/categories" style={styles.navLink}>Manage Categories</Link>
         <Link to="/admin/banners" style={styles.navLink}>Manage Banners</Link>
         <Link to="/admin/coupons" style={styles.navLink}>Manage Coupons</Link>
         <Link to="/admin/settings" style={styles.navLink}>Settings</Link>
+        <Link to="/admin/broadcast" style={styles.navLink}>Send Notification</Link>
       </div>
 
       <div style={styles.statsGrid}>

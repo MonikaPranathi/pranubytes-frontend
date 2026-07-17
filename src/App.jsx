@@ -17,6 +17,7 @@ import Addresses from './pages/Addresses';
 import AdminBanners from './pages/admin/AdminBanners';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminCoupons from './pages/admin/AdminCoupons';
+import AdminBroadcast from './pages/admin/AdminBroadcast';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
         <Route path="/admin/banners" element={<AdminBanners />} />
         <Route path="/admin/settings" element={<AdminSettings />} />
         <Route path="/admin/coupons" element={<AdminCoupons />} />
+        <Route path="/admin/broadcast" element={<AdminBroadcast />} />
       </Routes>
     </BrowserRouter>
   );
